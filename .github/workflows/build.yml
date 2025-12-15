@@ -1,11 +1,17 @@
-name: Deploy Events Site
+name: Build and Deploy Events Site
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "data/events.csv"
+      - "images/**"
+      - "tools/build_events.py"
+      - "index.html"
 
 permissions:
+  contents: read
   pages: write
   id-token: write
 
@@ -32,7 +38,13 @@ jobs:
           cp -r partials site/
           cp -r images site/
 
-      - name: Upload Pages artifact
+      - name: Upload artifact (for manual download/debug)
+        uses: actions/upload-artifact@v4
+        with:
+          name: events-site
+          path: site
+
+      - name: Upload Pages artifact (for deployment)
         uses: actions/upload-pages-artifact@v2
         with:
           path: site
