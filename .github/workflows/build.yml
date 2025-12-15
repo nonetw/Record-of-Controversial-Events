@@ -1,17 +1,11 @@
-name: Build and Deploy Events Site
+name: Deploy Events Site
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "data/events.csv"
-      - "images/**"
-      - "tools/build_events.py"
-      - "index.html"
 
 permissions:
-  contents: read
   pages: write
   id-token: write
 
@@ -28,7 +22,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run build_events.py
+      - name: Build events.html
         run: python tools/build_events.py
 
       - name: Prepare site folder
