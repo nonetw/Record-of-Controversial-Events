@@ -1,14 +1,11 @@
-name: Build and Deploy Events Site
+name: Build Events HTML
 
 on:
   push:
-    branches:
-      - main
     paths:
       - "data/events.csv"
       - "images/**"
       - "tools/build_events.py"
-      - "index.html"
 
 permissions:
   contents: read
@@ -28,29 +25,36 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # 如果有需要額外套件，可以在這裡加上，例如：
+          # pip install pandas
+
       - name: Run build_events.py
         run: python tools/build_events.py
 
-      - name: Prepare site folder
-        run: |
-          mkdir site
-          cp index.html site/
-          cp -r partials site/
-          cp -r images site/
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v2
+      - name: Upload artifact (events.html)
+        uses: actions/upload-artifact@v3
         with:
           path: site
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+deploy:
+  needs: build
+  runs-on: ubuntu-latest
+  environment:
+    name: github-pages
+    url: ${{ steps.deployment.outputs.page_url }}
 
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+  steps:
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: site
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
