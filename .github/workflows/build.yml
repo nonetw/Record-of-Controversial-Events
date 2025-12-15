@@ -4,47 +4,27 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "data/events.csv"
-      - "images/**"
-      - "tools/build_events.py"
-      - "index.html"
+  workflow_dispatch:
 
 permissions:
-  contents: read
   pages: write
   id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Build events.html
-        run: python tools/build_events.py
-
-      - name: Prepare site folder
-        run: |
+      - run: python tools/build_events.py
+      - run: |
           mkdir site
           cp index.html site/
           cp -r partials site/
           cp -r images site/
-
-      - name: Upload artifact (for manual download/debug)
-        uses: actions/upload-artifact@v4
-        with:
-          name: events-site
-          path: site
-
-      - name: Upload Pages artifact (for deployment)
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: site
@@ -55,7 +35,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
