@@ -63,7 +63,8 @@ def main():
             tags_raw = row.get("tags","") or ""
             tags_list = [t.strip() for t in tags_raw.split(",") if t.strip()]
             tags_html = " ".join(f'<span class="tag">{escape_html(t)}</span>' for t in tags_list)
-            summary = escape_html(row.get("summary","") or "")
+            summary_raw = row.get("summary","") or ""
+            summary = escape_html(summary_raw).replace("&lt;br&gt;", "<br>")
             links_html = parse_links(row.get("links","") or "")
             screenshots_html = parse_screenshots(row.get("screenshots","") or "", row.get("company",""))
 
