@@ -1,0 +1,45 @@
+name: Build rows and deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'data/**'
+      - 'images/**'
+      - 'tools/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate rows.html
+        run: python tools/build_rows.py
+
+      - name: Commit generated rows.html
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add contents/events.html
+          git commit -m "Auto-update events.html" || echo "No changes"
+          git push
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
