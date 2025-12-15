@@ -20,14 +20,14 @@ jobs:
         with:
           python-version: '3.14'
 
-      - name: Generate rows.html
+      - name: Generate events.html
         run: python tools/build_events.py
 
       - name: Commit generated events.html
         run: |
           git config user.name "GitHub Actions"
           git config user.email "nonetw@users.noreply.github.com"
-          git add contents/events.html
+          git add partials/events.html
           git commit -m "Auto-update events.html" || echo "No changes"
           git push
 
