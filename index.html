@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>公司/組織重要事件紀錄</title>
+  <title>爭議事件紀錄</title>
   <!-- DataTables CSS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css">
   <style>
@@ -21,64 +21,92 @@
   </style>
 </head>
 <body>
-  <h1>公司/組織重要事件紀錄</h1>
+  <h1>爭議事件紀錄</h1>
 
   <!-- 標籤篩選複選框 -->
+  <!--
   <div class="filter-container">
     <label><input type="checkbox" class="tagFilter" value="食安"> 食安</label>
     <label><input type="checkbox" class="tagFilter" value="勞工"> 勞工</label>
-    <label><input type="checkbox" class="tagFilter" value="IPO"> IPO</label>
+    <label><input type="checkbox" class="tagFilter" value="中國"> 中國</label>
   </div>
+  -->
 
   <table id="eventTable" class="display">
     <thead>
       <tr>
-        <th>公司名稱</th>
+        <th>時間</th>
+		<th>名稱</th>
         <th>標籤</th>
         <th>事件簡述</th>
         <th>網址</th>
         <th>紀錄截圖</th>
       </tr>
+      <!-- 在前三欄位加下拉選單 -->
+      <tr>
+        <th></th>
+        <th><select><option value="">全部</option></select></th>
+        <th><select><option value="">全部</option></select></th>
+        <th></th>
+        <th></th>
+		<th></th>
+      </tr>
     </thead>
     <tbody>
       <!-- 頂新有多筆紀錄 -->
       <tr>
+		<td>2012–2014</td>
         <td>頂新國際集團</td>
         <td>
           <span class="tag">食安</span>
         </td>
-        <td>2012–2014年間，頂新公司進口劣質油品製成食用油販售，引發「黑心油事件」。</td>
+        <td>頂新公司進口劣質油品製成食用油販售，引發「黑心油事件」。</td>
         <td>
           <a href="https://www.thenewslens.com/article/170761">新聞來源1</a><br>
-          <a href="https://www.cna.com.tw/news/asoc/202112280123.aspx">新聞來源2</a>
         </td>
         <td>
           <img src="images/tinghsin_oil1.png" alt="截圖1">
         </td>
       </tr>
-      <tr>
-        <td>頂新國際集團</td>
-        <td>
-          <span class="tag">勞工</span>
-          <span class="tag">合作</span>
-        </td>
-        <td>2015年，頂新爆發勞資糾紛並與外部組織簽署合作協議。</td>
-        <td>
-          <a href="https://example.com">新聞來源</a>
-        </td>
-        <td>
-          <img src="images/tinghsin_labor.png" alt="截圖2">
-        </td>
-      </tr>
       <!-- 全聯紀錄 -->
       <tr>
-        <td>全聯福利中心</td>
+        <td>2017</td>
+		<td>全聯福利中心</td>
         <td>
           <span class="tag">勞工</span>
         </td>
-        <td>2017年，全聯員工羅玉芬在勞動節倒下，7天後過世，事件引發過勞職災爭議。</td>
+        <td>全聯員工在勞動節倒下，7天後過世，事件引發過勞職災爭議。</td>
         <td>
           <a href="https://www.twreporter.org/a/death-of-pxmart-labor">新聞來源</a>
+        </td>
+        <td>
+          <img src="images/pxmart_labor.png" alt="截圖1">
+        </td>
+      </tr>
+	  <tr>
+        <td>2024</td>
+		<td>全聯福利中心</td>
+        <td>
+          <span class="tag">誠信</span>
+        </td>
+        <td>全聯優惠藏陷阱？特價商品「一算比原價貴」</td>
+        <td>
+          <a href="https://www.storm.mg/lifestyle/5168469">新聞來源</a>
+        </td>
+        <td>
+          <img src="images/pxmart_labor.png" alt="截圖1">
+        </td>
+      </tr>
+	  <tr>
+        <td>20250920</td>
+		<td>全聯福利中心</td>
+        <td>
+          <span class="tag">中國</span>
+		  <span class="tag">誠信</span>
+        </td>
+        <td>國產馬鈴薯產地竟標「中國」 全聯：門市作業疏失會檢討</td>
+        <td>
+          <a href="https://news.tvbs.com.tw/life/2994539">新聞來源</a>
         </td>
         <td>
           <img src="images/pxmart_labor.png" alt="截圖1">
@@ -91,28 +119,51 @@
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
   <script>
-    $(document).ready(function() {
-      var table = $('#eventTable').DataTable({
-        pageLength: 5,
-        lengthMenu: [5, 10, 20],
-        order: [[0, 'asc']]
-      });
+$(document).ready(function() {
+  var table = $('#eventTable').DataTable({
+    orderCellsTop: true,
+    fixedHeader: true,
+    pageLength: 100,
+    lengthMenu: [10, 20, 50, 100]
+  });
 
-      // 標籤複選篩選功能
-      $('.tagFilter').on('change', function() {
-        var selectedTags = [];
-        $('.tagFilter:checked').each(function() {
-          selectedTags.push($(this).val());
+  // 建立下拉選單
+  $('#eventTable thead tr:eq(1) th').each(function(i) {
+    var select = $('select', this);
+    if (select.length) {
+      if (i === 2) { // 標籤欄位
+        // 從每個 cell 抓出所有 <span class="tag">
+        table.column(i).nodes().to$().each(function() {
+          $(this).find('.tag').each(function() {
+            var tagText = $(this).text().trim();
+            if (tagText && select.find("option[value='" + tagText + "']").length === 0) {
+              select.append('<option value="' + tagText + '">' + tagText + '</option>');
+            }
+          });
         });
+      } else {
+        // 其他欄位直接抓純文字
+        table.column(i).nodes().to$().each(function() {
+          var text = $(this).text().trim();
+          if (text && select.find("option[value='" + text + "']").length === 0) {
+            select.append('<option value="' + text + '">' + text + '</option>');
+          }
+        });
+      }
 
-        if (selectedTags.length > 0) {
-          var regex = selectedTags.join('|'); // OR 條件
-          table.column(1).search(regex, true, false).draw();
+      // 綁定篩選事件
+      select.on('change', function() {
+        var val = $(this).val();
+        if (val) {
+          // 用「包含」搜尋，避免被合併
+          table.column(i).search(val).draw();
         } else {
-          table.column(1).search('').draw();
+          table.column(i).search('').draw();
         }
       });
-    });
+    }
+  });
+});
   </script>
 </body>
 </html>
