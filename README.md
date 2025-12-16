@@ -11,7 +11,7 @@ summary(事件簡述): 如果需要分行請用 \<br\><br>
 links(網址): 可以多個，請用分號分隔<br>
 screenshots(紀錄截圖): 可以多個，請用分號分隔，只寫檔名，請於 images 底下依 company(名稱) 建目錄放置圖片檔案<br>
 
-範例：<br>
+events.csv 範例：<br>
 date,company,tags,summary,links,screenshots<br>
 2025,OrgNameX,"TagX,TagYZ","OrgNameX XXX事件簡述\<br\>集團相關：X1, X2, X3","XXX1|https://x1/;XXX2|https://x2/","1.jpeg;2.jpeg"<br>
 
